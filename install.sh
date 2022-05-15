@@ -44,9 +44,29 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-m
 sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="amuse"/g' $HOME/.zshrc
 sed -i 's/plugins=(git)/plugins=(git z zsh-autosuggestions)/g' $HOME/.zshrc
 
+touch ~/.rc
+echo "source ~/.rc" >> ~/.zshrc
+
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 
 git clone https://github.com/gpakosz/.tmux.git ~/.tmux
 ln -s -f ~/.tmux/.tmux.conf ~/.tmux.conf
 cp ~/.tmux/.tmux.conf.local ~/.tmux.conf.local
+
+if ! type "nvim" >/dev/null; then
+  if [ "$IS_LINUX" = true ]; then
+    sudo apt-get install neovim
+  else
+    brew install neovim
+  fi
+
+  echo "alias vim='nvim'" >> $HOME/.rc
+fi
+
+if ! type "lvim" >/dev/null; then
+  curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh | bash - -- -y
+  echo "alias lvim=$HOME/.local/bin/lvim" >> $HOME/.rc
+fi
+
+popd || exit 1
